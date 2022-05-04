@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="limited" default="false"/>
+  <arg name="paused" default="false"/>
+  <arg name="gui" default="false"/>
+  
+  <!-- startup simulated world -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" default="$(find assignment2)/worlds/assignment2.world"/>
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="gui" value="$(arg gui)"/>
+  </include>
+
+  <!-- send robot urdf to param server -->
+  <include file="$(find assignment2)/launch/ur5_upload.launch">
+    <arg name="limited" value="$(arg limited)"/>
+  </include>
+
+  <!-- push robot_description to factory and spawn robot in gazebo -->
+  <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model robot " respawn="false" output="screen" />
+
+  <include file="$(find ur_gazebo)/launch/controller_utils.launch"/>
+
+  <rosparam file="$(find ur_gazebo)/controller/arm_controller_ur5.yaml" command="load"/>
+  <node name="arm_controller_spawner" pkg="controller_manager" type="controller_manager" args="spawn arm_controller" respawn="false" output="screen"/>
+
+  <param name="gripper_description" command="$(find xacro)/xacro $(find robotiq_2f_85_gripper_visualization)/urdf/robotiq_arg2f_85_model.xacro" />
+  
+  <node name="robotic_joint_state_publisher"
+	pkg="joint_state_publisher"
+	type="joint_state_publisher">
+    <remap from="joint_states" to="/gripper/joint_states"/>
+    <remap from="robot_description" to="gripper_description"/>
+  </node>
+
+  <node name="robotic_robot_state_publisher"
+	pkg="robot_state_publisher"
+	type="robot_state_publisher">
+    <remap from="joint_states" to="/gripper/joint_states"/>
+    <remap from="robot_description" to="gripper_description"/>
+  </node>
+
+  <node pkg="tf"
+	type="static_transform_publisher"
+	name="tf_pick"
+	args="0 -.046 0 0 0 0 right_inner_finger_pad gripper_pick 10">
+  </node>
+
+  <node pkg="tf"
+	type="static_transform_publisher"
+	name="tf_gripper"
+	args="0 0 0 0 1.5807  0 ee_link robotiq_arg2f_base_link 10">
+  </node>  
+  
+  <node pkg="image_proc"
+        type="image_proc"
+        name="image_proc"
+	output="screen"
+	ns="camera">
+  </node>
+
+  
+  <node pkg="rqt_gui"
+	type="rqt_gui"
+	name="rqt_gui"
+	args="--perspective-file $(find assignment2)/assignment2.perspective"/>
+
+  <node pkg="rviz"
+	type="rviz"
+	name="rviz"
+	args="-d $(find assignment2)/assignment2.rviz"/>
+
+  <include file="$(find assignment2)/launch/aruco.launch"/>
+
+
+</launch>

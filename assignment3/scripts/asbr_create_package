@@ -1,0 +1,9 @@
+#!/bin/bash
+
+FILE=assignment3.tgz
+tar cfz $HOME/$FILE -C ~/sbr_workspace/src/sbr assignment3
+
+tar xfzO $HOME/$FILE assignment3/src/assignment3_context.cpp
+echo -e "\n\n\nYour package file is at $HOME/$FILE"
+echo -e "The package contains the file assignment3_context.cpp printed above."
+echo -e "Please make sure this file is correct before submitting your package."

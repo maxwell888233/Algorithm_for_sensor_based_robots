@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<robot>
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/</robotNamespace>
+    </plugin>
+  </gazebo>
+
+  <gazebo>
+    <plugin name="imu_controller" filename="libhector_gazebo_ros_imu.so">
+      <robotNamespace>/</robotNamespace>
+      <updateRate>50.0</updateRate>
+      <frameId>imu_link</frameId>
+      <bodyName>imu_link</bodyName>
+      <topicName>imu/data</topicName>
+      <accelDrift>0.005 0.005 0.005</accelDrift>
+      <accelGaussianNoise>0.05 0.05 0.05</accelGaussianNoise>
+      <rateDrift>0.005 0.005 0.005 </rateDrift>
+      <rateGaussianNoise>0.005 0.005 0.005 </rateGaussianNoise>
+      <headingDrift>0.005</headingDrift>
+      <headingGaussianNoise>0.005</headingGaussianNoise>
+    </plugin>
+  </gazebo>
+
+<gazebo>
+    <plugin name="gps_controller" filename="libhector_gazebo_ros_gps.so">
+      <updateRate>10</updateRate>
+      <robotNamespace>/</robotNamespace>
+      <bodyName>navsat_link</bodyName>
+      <frameId>base_link</frameId>
+      <topicName>/navsat/fix</topicName>
+      <velocityTopicName>/navsat/vel</velocityTopicName>
+      <gaussianNoise> 3.5376e-02 6e-02 0.0301 </gaussianNoise>
+      <referenceLatitude>35.859456</referenceLatitude>
+      <referenceLongitude>-108.236839</referenceLongitude>
+      <!--
+      <referenceLatitude>39.325341</referenceLatitude>
+      <referenceLongitude>-76.622410</referenceLongitude>
+      -->
+      <!--<referenceLatitude>33.324968</referenceLatitude>
+      <referenceLongitude>-72.622141</referenceLongitude>
+      -->
+      <!--
+      <referenceLatitude>39.324968</referenceLatitude>
+      <referenceLongitude>-76.622141</referenceLongitude>
+      -->
+      <referenceHeading>74</referenceHeading>
+      <referenceAltitude>64</referenceAltitude>
+      <drift>0 0 0</drift>                                                                                             
+    </plugin>
+  </gazebo>
+
+  <gazebo reference="base_link">
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
+
+  <gazebo reference="chassis_link">
+    <material>Gazebo/DarkGrey</material>
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
+    <gazebo reference="imu_link">
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
+
+  <gazebo reference="navsat_link">
+    <material>Gazebo/DarkGrey</material>
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
+  <gazebo reference="fenders_link">
+    <material>Gazebo/Yellow</material>
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
+</robot>

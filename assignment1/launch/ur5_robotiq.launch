@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<launch>
+
+  <include file="$(find assignment1)/launch/ur5.launch">
+    <arg name="limited" value="true"/>
+    <arg name="gui" value="false"/>
+  </include>
+
+  <include file="$(find assignment1)/launch/viewer.launch"/>
+
+  <node pkg="tf"
+	type="static_transform_publisher"
+	name="tf_pick"
+	args="0 -.046 0 0 0 0 right_inner_finger_pad gripper_pick 10">
+  </node>
+
+  <node pkg="tf"
+	type="static_transform_publisher"
+	name="tf_gripper"
+	args="0 0 0 0 1.5807  0 ee_link robotiq_arg2f_base_link 10">
+  </node>  
+
+  <node pkg="rqt_gui"
+	type="rqt_gui"
+	name="rqt_gui"
+	args="--perspective-file $(find assignment1)/assignment1.perspective"/>
+  
+</launch>
